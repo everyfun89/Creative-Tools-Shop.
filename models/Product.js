@@ -2,11 +2,12 @@ import mongoose from 'mongoose';
 
 const ProductSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  description: String,
+  description: { type: String },
   price: { type: Number, required: true },
-  imageUrl: String,
-  category: { type: String, enum: ['Crafts', 'Drawing'], required: true },
-  stock: { type: Number, default: 0 },
+  imageUrl: { type: String, required: true },
+  category: { type: String, enum: ['craft', 'drawing', 'trending'], required: true },
+  supplierUrl: { type: String },
+  isTrending: { type: Boolean, default: false },
 }, { timestamps: true });
 
 export default mongoose.models.Product || mongoose.model('Product', ProductSchema);
