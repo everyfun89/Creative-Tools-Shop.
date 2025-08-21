@@ -1,9 +1,15 @@
+// Home.jsx
+// Homepage component van de website
+// - Bovenste snelkoppelingsvak netjes afgerond
+// - Onderliggend vak verwijderd
+// - Tekst 'trends' verwijderd
+// - Login mogelijkheid met Google of e-mail
+// Kleuren: hoofdkleur #87d0fa, detailkleur #ffa8f4
+
 import { useEffect, useState } from "react";
-import { useSession, signIn } from "next-auth/react";
 
 export default function Home() {
   const [trending, setTrending] = useState([]);
-  const { data: session } = useSession();
 
   useEffect(() => {
     fetch("/api/products?sort=popular")
@@ -11,35 +17,25 @@ export default function Home() {
       .then((data) => setTrending(data));
   }, []);
 
-  if (!session) {
-    // Niet ingelogde gebruiker: login-knoppen
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#f0f8ff]">
-        <h1 className="text-3xl font-bold mb-6 text-[#87d0fa]">Login</h1>
-        <button
-          onClick={() => signIn("google")}
-          className="mb-4 px-6 py-2 bg-[#87d0fa] text-white rounded-xl hover:bg-[#ffa8f4] transition"
-        >
-          Login met Google
-        </button>
-        <button
-          onClick={() => signIn("email")}
-          className="px-6 py-2 bg-[#87d0fa] text-white rounded-xl hover:bg-[#ffa8f4] transition"
-        >
-          Login met e-mail
-        </button>
-      </div>
-    );
-  }
-
-  // Ingelogde gebruiker: trending producten tonen
   return (
-    <div className="p-6">
+    <div className="px-6 md:px-12">
+      {/* Hero / Snelkoppelingsvak */}
+      <section className="text-center py-12 bg-[#87d0fa] text-white rounded-3xl shadow-soft mb-10">
+        <h1 className="text-4xl font-bold mb-2">Creative Tools</h1>
+        <p className="text-lg">Ontdek de meest creatieve en trending producten</p>
+        {/* Login buttons */}
+        <div className="mt-6 flex justify-center gap-4">
+          <button className="px-6 py-2 bg-white text-[#87d0fa] rounded-xl font-semibold hover:bg-[#ffa8f4] hover:text-white transition">
+            Login met Google
+          </button>
+          <button className="px-6 py-2 bg-white text-[#87d0fa] rounded-xl font-semibold hover:bg-[#ffa8f4] hover:text-white transition">
+            Login met e-mail
+          </button>
+        </div>
+      </section>
+
       {/* Trending Products */}
       <section>
-        <h2 className="text-2xl font-bold mb-6 text-[#ffa8f4]">
-          Trending Products
-        </h2>
         <div className="grid md:grid-cols-3 gap-8">
           {trending.map((product) => (
             <div
