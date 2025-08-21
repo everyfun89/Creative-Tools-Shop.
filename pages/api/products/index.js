@@ -1,12 +1,18 @@
-import mongoose from 'mongoose';
+import connectMongo from '../../../lib/mongodb';
+import Product from '../../../models/Product';
 
-const ProductSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: String,
-  price: { type: Number, required: true },
-  imageUrl: String,
-  category: { type: String, enum: ['Crafts', 'Drawing'], required: true },
-  stock: { type: Number, default: 0 },
-}, { timestamps: true });
+export default async function handler(req, res) {
+  await connectMongo();
 
-export default mongoose.models.Product || mongoose.model('Product', ProductSchema);
+  const { category, sort } = req.query;
+  let query = {};
+  if (category) query.category = category;
+
+  let products = await Product.find(query);
+
+  if (sort === 'popular') {
+    products = products.filter(p => p.isTrending);
+  }
+
+  res.status(200).json(products);
+}
