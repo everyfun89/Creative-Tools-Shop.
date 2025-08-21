@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useSession, signIn } from "next-auth/react";
 
 export default function Home() {
   const [trending, setTrending] = useState([]);
+  const { data: session } = useSession();
 
   useEffect(() => {
     fetch("/api/products?sort=popular")
@@ -9,14 +11,30 @@ export default function Home() {
       .then((data) => setTrending(data));
   }, []);
 
-  return (
-    <div>
-      {/* Hero Section */}
-      <section className="text-center py-12 bg-pastelBlue text-white rounded-2xl shadow-soft mb-10">
-        <h1 className="text-4xl font-bold mb-2">Creative Tools</h1>
-        <p className="text-lg">Ontdek de meest creatieve en trending producten</p>
-      </section>
+  if (!session) {
+    // Als de gebruiker niet ingelogd is, toon login-knoppen
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-pastelBg">
+        <h1 className="text-3xl font-bold mb-6 text-pastelBlue">Login</h1>
+        <button
+          onClick={() => signIn("google")}
+          className="mb-4 px-6 py-2 bg-pastelBlue text-white rounded-xl hover:bg-pastelPink transition"
+        >
+          Login met Google
+        </button>
+        <button
+          onClick={() => signIn("email")}
+          className="px-6 py-2 bg-pastelBlue text-white rounded-xl hover:bg-pastelPink transition"
+        >
+          Login met e-mail
+        </button>
+      </div>
+    );
+  }
 
+  // Als ingelogd, toon producten
+  return (
+    <div className="p-6">
       {/* Trending Products */}
       <section>
         <h2 className="text-2xl font-bold mb-6 text-pastelPink">
