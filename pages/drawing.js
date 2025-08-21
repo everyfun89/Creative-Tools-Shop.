@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 
 export default function Drawing() {
-  const [drawingProducts, setDrawingProducts] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('/api/products?category=drawing') // API filter op tekenspullen
+    fetch('/api/products?category=drawing')
       .then(res => res.json())
-      .then(data => setDrawingProducts(data));
+      .then(data => setProducts(data));
   }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-blue-100 p-10">
       <h1 className="text-4xl text-center font-bold text-pink-600 mb-10">Drawing Supplies</h1>
       <div className="grid md:grid-cols-3 gap-6">
-        {drawingProducts.map(product => (
+        {products.map(product => (
           <div key={product._id} className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
             <img src={product.imageUrl} alt={product.name} className="h-48 w-full object-cover rounded-lg mb-4"/>
             <h2 className="text-xl font-semibold mb-2 text-blue-600">{product.name}</h2>
