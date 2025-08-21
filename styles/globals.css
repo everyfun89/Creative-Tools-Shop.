@@ -1,7 +1,15 @@
-body {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* basis voor jouw pastel look */
+html, body {
+  padding: 0;
   margin: 0;
-  font-family: Arial, sans-serif;
+  background-color: #FDF6F0; /* pastelBg */
+  color: #333333;            /* pastelText */
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial;
 }
-h1 {
-  color: #333;
-}
+
+a { color: inherit; text-decoration: none; }
+* { box-sizing: border-box; }
