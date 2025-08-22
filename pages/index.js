@@ -1,50 +1,45 @@
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+// File: pages/index.js
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Home() {
   const { data: session } = useSession();
-  const [trending, setTrending] = useState([]);
 
-  // Redirect to login if not logged in
   if (!session) {
-    if (typeof window !== "undefined") window.location.href = "/login";
-    return null;
+    // Niet ingelogd → toon login
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#87d0fa] px-6 md:px-12">
+        <h1 className="text-4xl font-bold mb-6 text-white">Welcome to Creative Tools</h1>
+        <p className="text-lg mb-8 text-white">Sign in to start exploring our creative products</p>
+        <div className="flex gap-4">
+          <button
+            onClick={() => signIn("google")}
+            className="px-6 py-3 bg-white text-[#87d0fa] rounded-xl font-semibold hover:bg-[#ffa8f4] transition"
+          >
+            Sign in with Google
+          </button>
+          <button
+            onClick={() => signIn("email")}
+            className="px-6 py-3 bg-white text-[#87d0fa] rounded-xl font-semibold hover:bg-[#ffa8f4] transition"
+          >
+            Sign in with Email
+          </button>
+        </div>
+      </div>
+    );
   }
 
-  useEffect(() => {
-    fetch("/api/products?sort=popular")
-      .then((res) => res.json())
-      .then((data) => setTrending(data));
-  }, []);
-
+  // Ingelogd → toon homepage content
   return (
-    <div className="px-6 md:px-12 py-12 bg-[#87d0fa] min-h-screen">
-      <section className="grid md:grid-cols-3 gap-8">
-        {trending.map((product) => (
-          <div
-            key={product._id}
-            className="bg-white rounded-2xl shadow-soft overflow-hidden hover:scale-105 transform transition duration-200"
-          >
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              className="h-48 w-full object-cover"
-            />
-            <div className="p-6 text-center">
-              <h3 className="text-xl font-semibold mb-2 text-[#87d0fa]">
-                {product.name}
-              </h3>
-              <p className="mb-4 text-gray-600">{product.description}</p>
-              <p className="font-bold text-[#ffa8f4] mb-4">
-                ${product.price.toFixed(2)}
-              </p>
-              <button className="px-4 py-2 bg-[#87d0fa] text-white rounded-xl hover:bg-[#ffa8f4] transition">
-                Add to cart
-              </button>
-            </div>
-          </div>
-        ))}
-      </section>
+    <div className="px-6 md:px-12 py-12">
+      <h2 className="text-2xl font-bold text-[#87d0fa] mb-6">Hello, {session.user.email}</h2>
+      <button
+        onClick={() => signOut()}
+        className="px-4 py-2 bg-[#ffa8f4] text-white rounded-xl hover:bg-[#87d0fa] transition mb-8"
+      >
+        Sign Out
+      </button>
+      {/* Hier kun je je producten of andere content laten zien */}
+      <p className="text-gray-700">Your trending products and other homepage content will appear here.</p>
     </div>
   );
 }
