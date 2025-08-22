@@ -13,7 +13,17 @@ export default NextAuth({
       from: process.env.EMAIL_FROM,
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/login",
+    signIn: "/", // Gebruikt homepage als login page
+  },
+  callbacks: {
+    async session({ session, token }) {
+      session.user.id = token.sub;
+      return session;
+    },
+    async redirect({ url, baseUrl }) {
+      return baseUrl;
+    },
   },
 });
