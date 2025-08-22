@@ -15,7 +15,7 @@ export default NextAuth({
   ],
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/", // Gebruikt homepage als login page
+    signIn: "/", // homepage als login
   },
   callbacks: {
     async session({ session, token }) {
