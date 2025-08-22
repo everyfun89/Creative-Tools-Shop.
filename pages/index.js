@@ -1,4 +1,6 @@
 // File: pages/index.js
+"use client";
+
 import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Home() {
@@ -38,7 +40,6 @@ export default function Home() {
       >
         Sign Out
       </button>
-      {/* Hier kun je je producten of andere content laten zien */}
       <p className="text-gray-700">Your trending products and other homepage content will appear here.</p>
     </div>
   );
