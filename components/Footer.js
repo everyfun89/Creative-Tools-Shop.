@@ -1,19 +1,16 @@
-// File: components/Footer.js
+import Link from "next/link";
+
 export default function Footer() {
   return (
-    <footer className="bg-pastelBlue text-white text-center p-4 rounded-t-2xl shadow-soft mt-12">
-      <p>© {new Date().getFullYear()} Creative Tools. All rights reserved.</p>
-      <nav className="mt-2 flex justify-center gap-6 text-sm">
-        <a href="/privacy" className="hover:underline">
-          Privacy
-        </a>
-        <a href="/about" className="hover:underline">
-          About
-        </a>
-        <a href="/contact" className="hover:underline">
-          Contact
-        </a>
-      </nav>
+    <footer className="bg-white border-t mt-10">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row justify-between items-center text-gray-600">
+        <p>&copy; {new Date().getFullYear()} Creative Tools</p>
+        <div className="flex gap-6 mt-4 md:mt-0">
+          <Link href="/contact">Contact</Link>
+          <Link href="/privacy">Privacy</Link>
+          <Link href="/about">About</Link>
+        </div>
+      </div>
     </footer>
   );
 }
