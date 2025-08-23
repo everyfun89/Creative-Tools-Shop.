@@ -98,7 +98,11 @@ function FeaturedCategories() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4">
         {categories.map((c) => (
-          <Link key={c.label} href={c.href} className="group block rounded-xl border border-gray-200 bg-white p-4 hover:border-pastelBlue hover:shadow-md transition">
+          <Link
+            key={c.label}
+            href={c.href}
+            className="group block rounded-xl border border-gray-200 bg-white p-4 hover:border-pastelBlue hover:shadow-md transition"
+          >
             <div className="h-12 w-12 rounded-full border border-gray-200 flex items-center justify-center mb-3 group-hover:border-pastelBlue text-lg">
               🎨
             </div>
