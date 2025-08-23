@@ -13,7 +13,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "mongoose": "^8.4.0",
-    "next-auth": "^4.24.7"
+    "next-auth": "^4.24.7",
+    "lucide-react": "^0.462.0"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.0",
