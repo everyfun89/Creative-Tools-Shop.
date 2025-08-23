@@ -1,7 +1,7 @@
 // File: pages/index.js
 import { useSession, signIn, signOut } from "next-auth/react";
 import Header from "../components/Header";
-import Footer from "../components/Footer"; // zorg dat dit echt bestaat!
+import Footer from "../components/Footer";
 import FeaturedCategories from "../components/FeaturedCategories";
 import Reviews from "../components/Reviews";
 
@@ -10,45 +10,50 @@ export default function Home() {
 
   if (!session) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-200 to-green-200 px-6 md:px-12">
+      <div className="flex flex-col min-h-screen bg-white">
         <Header />
-        <h1 className="text-4xl font-bold mb-6 text-black">Welkom</h1>
-        <p className="text-lg mb-8 text-black">
-          Log in om de creatieve producten te ontdekken
-        </p>
-        <div className="flex gap-4">
-          <button
-            onClick={() => signIn("google")}
-            className="px-6 py-3 bg-white text-blue-500 rounded-xl font-semibold hover:bg-pink-200 transition"
-          >
-            Sign in with Google
-          </button>
-          <button
-            onClick={() => signIn("email")}
-            className="px-6 py-3 bg-white text-blue-500 rounded-xl font-semibold hover:bg-pink-200 transition"
-          >
-            Sign in with Email
-          </button>
-        </div>
+        <main className="flex-1 flex flex-col items-center justify-center px-6 md:px-12">
+          <h1 className="text-4xl font-bold mb-6 text-gray-900">Welkom</h1>
+          <p className="text-lg mb-8 text-gray-700">
+            Log in om de creatieve producten te ontdekken
+          </p>
+          <div className="flex gap-4">
+            <button
+              onClick={() => signIn("google")}
+              className="px-6 py-3 bg-white border border-gray-300 text-pastelBlue rounded-xl font-semibold hover:border-pastelBlue hover:shadow transition"
+            >
+              Sign in with Google
+            </button>
+            <button
+              onClick={() => signIn("email")}
+              className="px-6 py-3 bg-white border border-gray-300 text-pastelBlue rounded-xl font-semibold hover:border-pastelBlue hover:shadow transition"
+            >
+              Sign in with Email
+            </button>
+          </div>
+        </main>
         <Footer />
       </div>
     );
   }
 
   return (
-    <div className="px-6 md:px-12 py-12 bg-gradient-to-b from-blue-200 to-green-200">
+    <div className="min-h-screen bg-white">
       <Header />
-      <h2 className="text-2xl font-bold text-black mb-6">
-        Hello, {session.user?.email}
-      </h2>
-      <button
-        onClick={() => signOut()}
-        className="px-4 py-2 bg-pink-200 text-white rounded-xl hover:bg-blue-500 transition mb-8"
-      >
-        Sign Out
-      </button>
-      <FeaturedCategories />
-      <Reviews />
+      <main className="px-6 md:px-12 py-10 max-w-7xl mx-auto">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          Hello, {session.user?.email}
+        </h2>
+        <button
+          onClick={() => signOut()}
+          className="px-4 py-2 bg-pastelBlue text-white rounded-xl hover:opacity-90 transition mb-8"
+        >
+          Sign Out
+        </button>
+
+        <FeaturedCategories />
+        <Reviews />
+      </main>
       <Footer />
     </div>
   );
