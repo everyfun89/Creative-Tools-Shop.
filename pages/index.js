@@ -14,15 +14,15 @@ function Header() {
         </div>
 
         <div className="flex-1 max-w-2xl mx-6">
-          <label htmlFor="site-search" className="sr-only">Zoek op site</label>
+          <label htmlFor="site-search" className="sr-only">Search site</label>
           <div className="relative">
             <input
               id="site-search"
               name="q"
               type="search"
-              placeholder="Zoek creatieve producten..."
+              placeholder="Search creative products..."
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pastelBlue"
-              aria-label="Zoek creatieve producten"
+              aria-label="Search creative products"
             />
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"
@@ -38,22 +38,20 @@ function Header() {
         </div>
 
         <div className="flex items-center gap-6">
-          <Link href="/login" className="text-gray-700 hover:text-pastelBlue">Inloggen</Link>
-          <Link href="/cart" className="text-gray-700 hover:text-pastelBlue">Winkelwagen</Link>
+          <Link href="/login" className="text-gray-700 hover:text-pastelBlue">Login</Link>
+          <Link href="/cart" className="text-gray-700 hover:text-pastelBlue">Cart</Link>
         </div>
       </div>
 
       <nav className="bg-white border-t border-gray-100">
         <ul className="flex justify-center gap-8 py-3 text-gray-700 font-medium">
-          <li><Link href="/">Alle</Link></li>
-          <li><Link href="/dames">Dames</Link></li>
-          <li><Link href="/heren">Heren</Link></li>
-          <li><Link href="/wonen">Wonen</Link></li>
-          <li><Link href="/sport">Sport</Link></li>
-          <li><Link href="/sieraden">Sieraden</Link></li>
-          <li><Link href="/trends">Trends</Link></li>
-          <li><Link href="/crafts">Crafts</Link></li>
+          <li><Link href="/">All</Link></li>
+          <li><Link href="/kids">Kids</Link></li>
+          <li><Link href="/adults">Adults</Link></li>
           <li><Link href="/drawing">Drawing</Link></li>
+          <li><Link href="/crafts">Crafts</Link></li>
+          <li><Link href="/trends">Trends</Link></li>
+          <li><Link href="/new">New</Link></li>
         </ul>
       </nav>
     </header>
@@ -63,20 +61,18 @@ function Header() {
 /* Inline FeaturedCategories component */
 function FeaturedCategories() {
   const categories = [
-    { label: "Alle", href: "/" },
-    { label: "Dames", href: "/dames" },
-    { label: "Heren", href: "/heren" },
-    { label: "Wonen", href: "/wonen" },
-    { label: "Sport", href: "/sport" },
-    { label: "Sieraden", href: "/sieraden" },
-    { label: "Trends", href: "/trends" },
-    { label: "Crafts", href: "/crafts" },
+    { label: "All", href: "/" },
+    { label: "Kids", href: "/kids" },
+    { label: "Adults", href: "/adults" },
     { label: "Drawing", href: "/drawing" },
+    { label: "Crafts", href: "/crafts" },
+    { label: "Trends", href: "/trends" },
+    { label: "New", href: "/new" },
   ];
 
   return (
     <section className="max-w-7xl mx-auto mt-10">
-      <h3 className="text-xl font-semibold text-gray-900 mb-4">Categorieën</h3>
+      <h3 className="text-xl font-semibold text-gray-900 mb-4">Categories</h3>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4">
         {categories.map((c) => (
@@ -97,9 +93,9 @@ function FeaturedCategories() {
 /* Inline Reviews component */
 function Reviews() {
   const reviews = [
-    { name: "Sara", text: "Mooie kwaliteit en super snelle levering!", rating: 5 },
-    { name: "Joris", text: "Creatieve selectie, de site is duidelijk en modern.", rating: 4 },
-    { name: "Lena", text: "Heel blij met mijn aankoop. Aanrader!", rating: 5 },
+    { name: "Sara", text: "Great quality and super fast delivery!", rating: 5 },
+    { name: "Joris", text: "Creative selection, the site looks clear and modern.", rating: 4 },
+    { name: "Lena", text: "Very happy with my purchase. Recommended!", rating: 5 },
   ];
 
   return (
@@ -111,7 +107,7 @@ function Reviews() {
           <div key={i} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <p className="font-medium text-gray-900">{r.name}</p>
-              <p className="text-yellow-500" aria-label={`${r.rating} sterren`}>
+              <p className="text-yellow-500" aria-label={`${r.rating} stars`}>
                 {"★".repeat(r.rating)}<span className="text-gray-300">{"★".repeat(5 - r.rating)}</span>
               </p>
             </div>
@@ -139,7 +135,7 @@ function Footer() {
   );
 }
 
-/* Main page component (gebruikt inline components) */
+/* Main page component */
 export default function Home() {
   const { data: session } = useSession();
 
@@ -148,9 +144,9 @@ export default function Home() {
       <div className="flex flex-col min-h-screen bg-white">
         <Header />
         <main className="flex-1 flex flex-col items-center justify-center px-6 md:px-12">
-          <h1 className="text-4xl font-bold mb-6 text-gray-900">Welkom</h1>
+          <h1 className="text-4xl font-bold mb-6 text-gray-900">Welcome</h1>
           <p className="text-lg mb-8 text-gray-700">
-            Log in om de creatieve producten te ontdekken
+            Log in to explore creative products
           </p>
           <div className="flex gap-4">
             <button
