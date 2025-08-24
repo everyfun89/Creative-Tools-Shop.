@@ -1,8 +1,22 @@
 // pages/register.js
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import Link from "next/link";
+
+function Toast({ show, text }) {
+  return (
+    <div
+      className={`fixed left-1/2 -translate-x-1/2 bottom-4 transition-all duration-300 ${
+        show ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+      }`}
+    >
+      <div className="bg-black text-white px-4 py-2 rounded-xl text-sm shadow-lg">
+        {text}
+      </div>
+    </div>
+  );
+}
 
 export default function Register() {
   const router = useRouter();
@@ -11,15 +25,30 @@ export default function Register() {
   const [password,setPassword] = useState("");
   const [msg,setMsg] = useState(null);
   const [loading,setLoading] = useState(false);
+  const [toast,setToast] = useState({show:false, text:""});
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true); setMsg(null);
-    const res = await fetch("/api/register", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({name,email,password}) });
-    const data = await res.json();
-    setLoading(false);
-    if (res.ok) router.push("/login");
-    else setMsg(data?.error || "Registration failed");
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({name,email,password})
+      });
+      const data = await res.json().catch(()=> ({}));
+      if (!res.ok) {
+        setMsg(data?.error || "Registration failed");
+      } else {
+        setToast({show:true, text:"Account successfully created"});
+        setTimeout(()=> setToast({show:false, text:""}), 3000);
+        setTimeout(()=> router.push("/login"), 800);
+      }
+    } catch (err) {
+      setMsg("Network error");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -32,11 +61,15 @@ export default function Register() {
           <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" placeholder="Email" className="w-full p-3 border rounded" required/>
           <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" placeholder="Password" className="w-full p-3 border rounded" required/>
           <button className="w-full py-3 bg-[#7FB3FF] text-white rounded" disabled={loading}>
-            {loading ? "Creating..." : "Create account"}
+            {loading ? "Creating…" : "Create account"}
           </button>
         </form>
-        <p className="mt-4 text-sm">Already have an account? <Link href="/login" className="text-[#7FB3FF]">Sign in</Link></p>
+        <p className="mt-4 text-sm">
+          Already have an account?{" "}
+          <Link href="/login" className="text-[#7FB3FF]">Sign in</Link>
+        </p>
       </div>
+      <Toast show={toast.show} text={toast.text} />
     </div>
   );
 }
