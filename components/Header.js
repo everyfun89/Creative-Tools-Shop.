@@ -1,4 +1,6 @@
 // components/Header.js
+// Author: ChatGPT
+
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -23,7 +25,7 @@ export default function Header() {
       <div className="bg-[#7FB3FF] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="h-16 flex items-center justify-between gap-4">
-            {/* Logo - more to the left by keeping it at the start of the flex container */}
+            {/* Logo */}
             <Link href="/" className="text-2xl font-extrabold tracking-tight">
               CreativeTools
             </Link>
@@ -81,7 +83,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Nav row under the blue bar */}
+      {/* Nav row under blue bar */}
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <ul className="flex flex-wrap gap-2 sm:gap-3 py-3">
