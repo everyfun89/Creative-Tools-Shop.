@@ -4,20 +4,19 @@ import Feedback from "../../models/Feedback";
 
 export default async function handler(req, res) {
   await connectMongo();
+
   if (req.method === "GET") {
-    const items = await Feedback.find({}).sort({ createdAt: -1 }).lean();
-    return res.status(200).json(items);
+    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+    return res.status(200).json(feedbacks);
   }
+
   if (req.method === "POST") {
-    const { name, email, rating, message } = req.body || {};
-    if (!rating || !message) return res.status(400).json({ error: "Rating and message required" });
-    try {
-      const f = await Feedback.create({ name, email, rating, message });
-      return res.status(201).json(f);
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Server error" });
-    }
+    const { name, message } = req.body;
+    if (!message) return res.status(400).json({ error: "Message is required" });
+
+    const newFeedback = await Feedback.create({ name, message });
+    return res.status(201).json(newFeedback);
   }
-  res.status(405).end();
+
+  return res.status(405).end();
 }
