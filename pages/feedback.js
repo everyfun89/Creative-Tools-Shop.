@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import connectMongo from "../lib/mongodb";
 import Feedback from "../models/Feedback";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function FeedbackPage() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -70,6 +71,22 @@ export default function FeedbackPage() {
           ))}
         </section>
       </main>
+
+      <footer className="mt-12">
+        <div className="max-w-7xl mx-auto px-6 py-8 bg-white border-t">
+          <div className="flex justify-between items-center">
+            <div className="text-sm text-gray-600">
+              © {new Date().getFullYear()} Creative Tools
+            </div>
+            <div className="flex gap-4">
+              <Link href="/privacy" className="text-sm">Privacy</Link>
+              <Link href="/about" className="text-sm">About</Link>
+              <Link href="/contact" className="text-sm">Contact</Link>
+              <Link href="/feedback" className="text-sm">Feedback</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
