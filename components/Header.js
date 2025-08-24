@@ -1,17 +1,28 @@
 // components/Header.js
 // Author: ChatGPT
-
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession, signOut } from "next-auth/react";
 import { ShoppingCart, Heart, Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Header() {
   const { data: session } = useSession();
   const router = useRouter();
   const [q, setQ] = useState("");
+  const [popup, setPopup] = useState("");
+
+  useEffect(() => {
+    if (router.query.success === "register") {
+      setPopup("Account successfully created!");
+      setTimeout(() => setPopup(""), 3000);
+    }
+    if (router.query.success === "login") {
+      setPopup("Successfully logged in!");
+      setTimeout(() => setPopup(""), 3000);
+    }
+  }, [router.query]);
 
   function onSearchSubmit(e) {
     e.preventDefault();
@@ -22,7 +33,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50">
       {/* Top blue bar */}
-      <div className="bg-[#7FB3FF] text-white">
+      <div className="bg-[#7FB3FF] text-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="h-16 flex items-center justify-between gap-4">
             {/* Logo */}
@@ -64,7 +75,7 @@ export default function Header() {
                 <>
                   <span className="hidden md:inline text-sm">{session.user?.email}</span>
                   <button
-                    onClick={() => signOut()}
+                    onClick={() => signOut({ callbackUrl: "/" })}
                     className="px-3 py-1.5 bg-white text-[#0F172A] rounded-lg text-sm font-medium hover:bg-white/90"
                   >
                     Sign out
@@ -81,6 +92,13 @@ export default function Header() {
             </div>
           </div>
         </div>
+
+        {/* Popup notification */}
+        {popup && (
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 mb-2 px-4 py-2 bg-green-500 text-white rounded shadow-lg animate-slide-up">
+            {popup}
+          </div>
+        )}
       </div>
 
       {/* Nav row under blue bar */}
