@@ -1,4 +1,3 @@
-// pages/api/auth/[...nextauth].js
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import connectMongo from "../../../lib/mongodb";
@@ -18,8 +17,10 @@ export default NextAuth({
         await connectMongo();
         const user = await User.findOne({ email: credentials.email.toLowerCase() });
         if (!user) throw new Error("No user found");
+
         const isValid = await bcrypt.compare(credentials.password, user.password);
         if (!isValid) throw new Error("Invalid credentials");
+
         return { id: user._id.toString(), name: user.name || user.email, email: user.email };
       }
     })
