@@ -1,7 +1,7 @@
 // pages/index.js
+// Author: ChatGPT
 "use client";
 import Header from "../components/Header";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
@@ -19,16 +19,8 @@ export default function Home() {
           <section className="text-center py-16">
             <h1 className="text-4xl font-bold mb-3">Welcome to CreativeTools</h1>
             <p className="text-gray-700 mb-6">
-              Sign in or create an account to explore curated creative products.
+              Sign in to explore curated creative products.
             </p>
-            <div className="flex justify-center gap-4">
-              <Link href="/login" className="px-6 py-3 border rounded-lg">
-                Sign in
-              </Link>
-              <Link href="/register" className="px-6 py-3 bg-[#7FB3FF] text-white rounded-lg">
-                Create account
-              </Link>
-            </div>
           </section>
         ) : (
           <section className="py-8">
@@ -39,7 +31,7 @@ export default function Home() {
           </section>
         )}
 
-        {/* If user searched, simple placeholder result area */}
+        {/* If user searched */}
         {searchQ ? (
           <section className="mt-8">
             <h3 className="text-xl font-semibold">Search results for “{searchQ}”</h3>
@@ -48,38 +40,7 @@ export default function Home() {
             </p>
           </section>
         ) : null}
-
-        {/* Categories */}
-        <section className="mt-10">
-          <h3 className="text-xl font-semibold text-gray-900">Categories</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mt-4">
-            {["All","Kids","Adults","Drawing","Crafts","Trends","New"].map((c) => (
-              <Link
-                key={c}
-                href={`/${c.toLowerCase()}`}
-                className="p-4 bg-white border rounded-xl hover:shadow-md"
-              >
-                <div className="text-lg">{c}</div>
-              </Link>
-            ))}
-          </div>
-        </section>
       </main>
-      <footer className="mt-12">
-        <div className="max-w-7xl mx-auto px-6 py-8 bg-white border-t">
-          <div className="flex justify-between items-center">
-            <div className="text-sm text-gray-600">
-              © {new Date().getFullYear()} Creative Tools
-            </div>
-            <div className="flex gap-4">
-              <Link href="/privacy" className="text-sm">Privacy</Link>
-              <Link href="/about" className="text-sm">About</Link>
-              <Link href="/contact" className="text-sm">Contact</Link>
-              <Link href="/feedback" className="text-sm">Feedback</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
