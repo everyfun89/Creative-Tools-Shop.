@@ -13,11 +13,23 @@ export default function Home() {
           <Link href="/" className="text-white font-semibold hover:text-gray-200">
             All
           </Link>
-          <Link href="/new" className="text-white font-semibold hover:text-gray-200">
-            New
+          <Link href="/kids" className="text-white font-semibold hover:text-gray-200">
+            Kids
+          </Link>
+          <Link href="/adults" className="text-white font-semibold hover:text-gray-200">
+            Adults
+          </Link>
+          <Link href="/drawing" className="text-white font-semibold hover:text-gray-200">
+            Drawing
+          </Link>
+          <Link href="/crafts" className="text-white font-semibold hover:text-gray-200">
+            Crafts
           </Link>
           <Link href="/trends" className="text-white font-semibold hover:text-gray-200">
             Trends
+          </Link>
+          <Link href="/new" className="text-white font-semibold hover:text-gray-200">
+            New
           </Link>
           <Link href="/organizers" className="text-white font-semibold hover:text-gray-200">
             Organizers
