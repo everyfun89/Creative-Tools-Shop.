@@ -16,7 +16,8 @@
     "next-auth": "^4.24.7",
     "lucide-react": "^0.462.0",
     "bcryptjs": "^2.4.3",
-    "nodemailer": "^6.9.4"
+    "nodemailer": "^6.9.4",
+    "fuse.js": "^6.7.4"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.0",
