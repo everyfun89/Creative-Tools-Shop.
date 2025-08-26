@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useSession, signOut } from "next-auth/react";
 import { ShoppingCart, Heart, Search } from "lucide-react";
 import { useState, useEffect } from "react";
-import Fuse from "fuse.js";
 
 export default function Header() {
   const { data: session } = useSession();
@@ -12,52 +11,13 @@ export default function Header() {
   const [q, setQ] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
-  const [results, setResults] = useState([]);
 
-  // Bestaande pagina's voor de zoekbar
-  const pages = [
-    { name: "Home", url: "/" },
-    { name: "Feedback", url: "/feedback" },
-    { name: "Cart", url: "/cart" },
-    { name: "Wishlist", url: "/wishlist" },
-  ];
-
-  // Fuse.js configuratie
-  const fuse = new Fuse(pages, {
-    keys: ["name"],
-    threshold: 0.3,
-    ignoreLocation: true,
-  });
-
-  // Bij submit op enter
   function onSearchSubmit(e) {
     e.preventDefault();
     const term = q.trim();
-    if (!term) return;
-
-    const searchResults = fuse.search(term);
-    if (searchResults.length > 0) {
-      router.push(searchResults[0].item.url);
-    } else {
-      router.push("/"); // fallback als geen match
-    }
-
-    setQ("");
-    setResults([]);
+    router.push(term ? `/?q=${encodeURIComponent(term)}` : "/");
   }
 
-  // Fuzzy search bij elke letter
-  useEffect(() => {
-    const term = q.trim();
-    if (!term) {
-      setResults([]);
-      return;
-    }
-    const fuzzyResults = fuse.search(term).map(r => r.item);
-    setResults(fuzzyResults);
-  }, [q]);
-
-  // Popup notifications bij login/register
   useEffect(() => {
     if (router.query?.success) {
       if (router.query.success === "login") {
@@ -86,13 +46,13 @@ export default function Header() {
               CreativeTools
             </Link>
 
-            <form onSubmit={onSearchSubmit} className="flex-1 max-w-2xl relative">
+            <form onSubmit={onSearchSubmit} className="flex-1 max-w-2xl">
               <div className="relative">
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   type="search"
-                  placeholder="Search pages…"
+                  placeholder="Search creative products…"
                   className="w-full h-10 pl-10 pr-4 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white/70"
                   aria-label="Search"
                 />
@@ -103,24 +63,6 @@ export default function Header() {
                 >
                   <Search size={18} />
                 </button>
-
-                {results.length > 0 && (
-                  <ul className="absolute z-10 w-full bg-white text-black border rounded mt-1 max-h-60 overflow-y-auto shadow-md">
-                    {results.map((item, index) => (
-                      <li
-                        key={index}
-                        className="p-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          router.push(item.url);
-                          setQ("");
-                          setResults([]);
-                        }}
-                      >
-                        {item.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
             </form>
 
@@ -158,13 +100,25 @@ export default function Header() {
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <ul className="flex flex-wrap gap-2 sm:gap-3 py-3">
-            {pages.map((item) => (
-              <li key={item.name}>
+            {[
+              { label: "All", href: "/" },
+              { label: "Kids", href: "/kids" },
+              { label: "Adults", href: "/adults" },
+              { label: "Drawing", href: "/drawing" },
+              { label: "Crafts", href: "/crafts" },
+              { label: "Trends", href: "/trends" },
+              { label: "New", href: "/new" },
+              { label: "Organizers", href: "/organizers" },
+              { label: "Handy", href: "/handy" },
+              { label: "Christmas", href: "/christmas" },
+              { label: "Birthday", href: "/birthday" },
+            ].map((item) => (
+              <li key={item.label}>
                 <Link
-                  href={item.url}
+                  href={item.href}
                   className="inline-block px-4 py-2 rounded-full border border-gray-200 hover:border-[#7FB3FF] hover:text-[#0F172A] transition"
                 >
-                  {item.name}
+                  {item.label}
                 </Link>
               </li>
             ))}
