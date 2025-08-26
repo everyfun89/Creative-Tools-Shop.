@@ -12,38 +12,41 @@ export default function Header() {
   const [q, setQ] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
-  const [results, setResults] = useState([]);
 
-  // Voorbeeldpagina's en producten
-  const pages = [
-    { name: "About", url: "/about" },
-    { name: "Contact", url: "/contact" },
-    { name: "Wishlist", url: "/wishlist" },
-    { name: "Privacy Policy", url: "/privacy" },
-  ];
+  // Voorbeeld producten
   const products = [
-    // { name: "Cool Brush", url: "/products/cool-brush" },
+    { name: "Pencil Set", path: "/products/pencil-set" },
+    { name: "Sketchbook", path: "/products/sketchbook" },
+    { name: "Paint Brushes", path: "/products/paint-brushes" },
+    { name: "Markers", path: "/products/markers" },
   ];
 
-  const itemsToSearch = [...products, ...pages];
+  // Pagina routes
+  const pages = [
+    { name: "Feedback", path: "/feedback" },
+    { name: "Cart", path: "/cart" },
+    { name: "Wishlist", path: "/wishlist" },
+    { name: "Home", path: "/" },
+  ];
 
-  // Fuse.js opties
-  const fuse = new Fuse(itemsToSearch, {
+  // Fuse.js configuratie
+  const fuse = new Fuse([...products, ...pages], {
     keys: ["name"],
-    threshold: 0.4, // hoe lager, hoe strenger
+    threshold: 0.3,
     ignoreLocation: true,
   });
 
   function onSearchSubmit(e) {
     e.preventDefault();
+    const term = q.trim();
+    if (!term) return;
+
+    const results = fuse.search(term);
     if (results.length > 0) {
-      router.push(results[0].url);
+      router.push(results[0].item.path);
     } else {
-      const term = q.trim();
-      router.push(term ? `/?q=${encodeURIComponent(term)}` : "/");
+      router.push("/"); // fallback als geen match
     }
-    setQ("");
-    setResults([]);
   }
 
   useEffect(() => {
@@ -58,17 +61,6 @@ export default function Header() {
       return () => clearTimeout(timer);
     }
   }, [router.query]);
-
-  // Fuzzy search bij elke letter
-  useEffect(() => {
-    const term = q.trim();
-    if (!term) {
-      setResults([]);
-      return;
-    }
-    const fuzzyResults = fuse.search(term).map(r => r.item);
-    setResults(fuzzyResults);
-  }, [q]);
 
   return (
     <header className="sticky top-0 z-50">
@@ -85,7 +77,7 @@ export default function Header() {
               CreativeTools
             </Link>
 
-            <form onSubmit={onSearchSubmit} className="flex-1 max-w-2xl relative">
+            <form onSubmit={onSearchSubmit} className="flex-1 max-w-2xl">
               <div className="relative">
                 <input
                   value={q}
@@ -102,24 +94,6 @@ export default function Header() {
                 >
                   <Search size={18} />
                 </button>
-
-                {results.length > 0 && (
-                  <ul className="absolute z-10 w-full bg-white text-black border rounded mt-1 max-h-60 overflow-y-auto shadow-md">
-                    {results.map((item, index) => (
-                      <li
-                        key={index}
-                        className="p-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          router.push(item.url);
-                          setQ("");
-                          setResults([]);
-                        }}
-                      >
-                        {item.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
             </form>
 
