@@ -5,9 +5,9 @@ export default function Home() {
   const { data: session } = useSession();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       {/* MAIN CONTENT */}
-      <main className="flex-grow max-w-7xl mx-auto py-10 px-6 bg-white w-full">
+      <main className="flex-grow max-w-7xl mx-auto py-10 px-6 w-full">
         {!session ? (
           <section className="text-center py-16">
             <h1 className="text-4xl font-bold mb-3">Welcome to CreativeTools</h1>
@@ -26,11 +26,7 @@ export default function Home() {
       </main>
 
       {/* FOOTER */}
-      <footer className="bg-gray-100 py-6 mt-8">
-        <div className="max-w-7xl mx-auto px-6 text-center text-gray-600">
-          © {new Date().getFullYear()} CreativeTools. All rights reserved.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
