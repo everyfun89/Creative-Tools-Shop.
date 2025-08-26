@@ -12,43 +12,64 @@ export default function Header() {
   const [q, setQ] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
+  const [results, setResults] = useState([]);
 
-  // Voorbeeld producten
-  const products = [
-    { name: "Pencil Set", path: "/products/pencil-set" },
-    { name: "Sketchbook", path: "/products/sketchbook" },
-    { name: "Paint Brushes", path: "/products/paint-brushes" },
-    { name: "Markers", path: "/products/markers" },
-  ];
-
-  // Pagina routes
+  // Pagina's en producten voor zoekfunctionaliteit
   const pages = [
-    { name: "Feedback", path: "/feedback" },
-    { name: "Cart", path: "/cart" },
-    { name: "Wishlist", path: "/wishlist" },
-    { name: "Home", path: "/" },
+    { name: "Home", url: "/" },
+    { name: "Feedback", url: "/feedback" },
+    { name: "Cart", url: "/cart" },
+    { name: "Wishlist", url: "/wishlist" },
+    { name: "About", url: "/about" },
+    { name: "Contact", url: "/contact" },
+    { name: "Privacy Policy", url: "/privacy" },
   ];
+
+  const products = [
+    { name: "Pencil Set", url: "/products/pencil-set" },
+    { name: "Sketchbook", url: "/products/sketchbook" },
+    { name: "Paint Brushes", url: "/products/paint-brushes" },
+    { name: "Markers", url: "/products/markers" },
+  ];
+
+  const itemsToSearch = [...pages, ...products];
 
   // Fuse.js configuratie
-  const fuse = new Fuse([...products, ...pages], {
+  const fuse = new Fuse(itemsToSearch, {
     keys: ["name"],
     threshold: 0.3,
     ignoreLocation: true,
   });
 
+  // Search submit
   function onSearchSubmit(e) {
     e.preventDefault();
     const term = q.trim();
     if (!term) return;
 
-    const results = fuse.search(term);
-    if (results.length > 0) {
-      router.push(results[0].item.path);
+    const searchResults = fuse.search(term);
+    if (searchResults.length > 0) {
+      router.push(searchResults[0].item.url);
     } else {
-      router.push("/"); // fallback als geen match
+      router.push(term ? `/?q=${encodeURIComponent(term)}` : "/");
     }
+
+    setQ("");
+    setResults([]);
   }
 
+  // Fuzzy search live bij typen
+  useEffect(() => {
+    const term = q.trim();
+    if (!term) {
+      setResults([]);
+      return;
+    }
+    const fuzzyResults = fuse.search(term).map(r => r.item);
+    setResults(fuzzyResults);
+  }, [q]);
+
+  // Popup bij login/register
   useEffect(() => {
     if (router.query?.success) {
       if (router.query.success === "login") {
@@ -70,6 +91,7 @@ export default function Header() {
         </div>
       )}
 
+      {/* Top bar */}
       <div className="bg-[#7FB3FF] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="h-16 flex items-center justify-between gap-4">
@@ -77,26 +99,43 @@ export default function Header() {
               CreativeTools
             </Link>
 
-            <form onSubmit={onSearchSubmit} className="flex-1 max-w-2xl">
+            {/* Search */}
+            <form onSubmit={onSearchSubmit} className="flex-1 max-w-2xl relative">
               <div className="relative">
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   type="search"
-                  placeholder="Search products or pages…"
+                  placeholder="Search products & pages…"
                   className="w-full h-10 pl-10 pr-4 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white/70"
                   aria-label="Search"
                 />
-                <button
-                  type="submit"
-                  className="absolute left-3 top-1/2 -translate-y-1/2"
-                  aria-label="Submit search"
-                >
+                <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2" aria-label="Submit search">
                   <Search size={18} />
                 </button>
+
+                {/* Dropdown suggesties */}
+                {results.length > 0 && (
+                  <ul className="absolute z-10 w-full bg-white text-black border rounded mt-1 max-h-60 overflow-y-auto shadow-md">
+                    {results.map((item, index) => (
+                      <li
+                        key={index}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          router.push(item.url);
+                          setQ("");
+                          setResults([]);
+                        }}
+                      >
+                        {item.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </form>
 
+            {/* Actions */}
             <div className="flex items-center gap-2 sm:gap-3">
               <Link href="/wishlist" className="p-2 rounded-lg hover:bg-white/15" aria-label="Wishlist">
                 <Heart size={20} />
@@ -128,6 +167,7 @@ export default function Header() {
         </div>
       </div>
 
+      {/* Nav bar */}
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <ul className="flex flex-wrap gap-2 sm:gap-3 py-3">
