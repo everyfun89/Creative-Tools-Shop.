@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useSession, signOut } from "next-auth/react";
 import { ShoppingCart, Heart, Search } from "lucide-react";
 import { useState, useEffect } from "react";
+import Fuse from "fuse.js";
 
 export default function Header() {
   const { data: session } = useSession();
@@ -11,12 +12,50 @@ export default function Header() {
   const [q, setQ] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
+  const [results, setResults] = useState([]);
+
+  // Pagina routes die je wilt kunnen zoeken
+  const pages = [
+    { name: "Home", path: "/" },
+    { name: "Feedback", path: "/feedback" },
+    { name: "Cart", path: "/cart" },
+    { name: "Wishlist", path: "/wishlist" },
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
+    { name: "Privacy Policy", path: "/privacy" },
+  ];
+
+  const fuse = new Fuse(pages, {
+    keys: ["name"],
+    threshold: 0.3, // hoe lager, hoe strenger
+    ignoreLocation: true,
+  });
 
   function onSearchSubmit(e) {
     e.preventDefault();
     const term = q.trim();
-    router.push(term ? `/?q=${encodeURIComponent(term)}` : "/");
+    if (!term) return;
+
+    const searchResults = fuse.search(term);
+    if (searchResults.length > 0) {
+      router.push(searchResults[0].item.path);
+    } else {
+      router.push(term ? `/?q=${encodeURIComponent(term)}` : "/");
+    }
+    setQ("");
+    setResults([]);
   }
+
+  // Fuzzy search bij elke letter
+  useEffect(() => {
+    const term = q.trim();
+    if (!term) {
+      setResults([]);
+      return;
+    }
+    const fuzzyResults = fuse.search(term).map((r) => r.item);
+    setResults(fuzzyResults);
+  }, [q]);
 
   useEffect(() => {
     if (router.query?.success) {
@@ -46,13 +85,13 @@ export default function Header() {
               CreativeTools
             </Link>
 
-            <form onSubmit={onSearchSubmit} className="flex-1 max-w-2xl">
+            <form onSubmit={onSearchSubmit} className="flex-1 max-w-2xl relative">
               <div className="relative">
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   type="search"
-                  placeholder="Search creative products…"
+                  placeholder="Search pages…"
                   className="w-full h-10 pl-10 pr-4 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white/70"
                   aria-label="Search"
                 />
@@ -63,6 +102,24 @@ export default function Header() {
                 >
                   <Search size={18} />
                 </button>
+
+                {results.length > 0 && (
+                  <ul className="absolute z-10 w-full bg-white text-black border rounded mt-1 max-h-60 overflow-y-auto shadow-md">
+                    {results.map((item, index) => (
+                      <li
+                        key={index}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          router.push(item.path);
+                          setQ("");
+                          setResults([]);
+                        }}
+                      >
+                        {item.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </form>
 
