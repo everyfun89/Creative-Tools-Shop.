@@ -6,7 +6,7 @@ import { SessionProvider } from "next-auth/react";
 export default function App({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider session={session}>
-      <div className="flex flex-col min-h-screen bg-pastelBg text-pastelText">
+      <div className="flex flex-col min-h-screen bg-white text-gray-900">
         {/* 1x Header */}
         <Header />
 
@@ -15,7 +15,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
           <Component {...pageProps} />
         </main>
 
-        {/* Footer blijft netjes onderaan */}
+        {/* Footer */}
         <Footer />
       </div>
     </SessionProvider>
