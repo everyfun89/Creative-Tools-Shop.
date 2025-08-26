@@ -2,8 +2,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
-import connectMongo from "../lib/mongodb";
-import Feedback from "../models/Feedback";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
@@ -12,20 +10,28 @@ export default function FeedbackPage() {
   const [message, setMessage] = useState("");
   const { data: session } = useSession();
 
+  // Feedback ophalen bij laden pagina
   useEffect(() => {
-    fetch("/api/feedback")
-      .then((res) => res.json())
-      .then((data) => setFeedbacks(data));
+    async function fetchFeedbacks() {
+      const res = await fetch("/api/feedback");
+      if (res.ok) {
+        const data = await res.json();
+        setFeedbacks(data);
+      }
+    }
+    fetchFeedbacks();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!session) return alert("You must be signed in to submit feedback");
+
     const res = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: session.user.name || session.user.email, message }),
     });
+
     if (res.ok) {
       const newFeedback = await res.json();
       setFeedbacks((prev) => [newFeedback, ...prev]);
@@ -58,7 +64,9 @@ export default function FeedbackPage() {
             </button>
           </form>
         ) : (
-          <p className="text-gray-600 mb-6">You must be signed in to leave feedback.</p>
+          <p className="text-gray-600 mb-6">
+            You must be signed in to leave feedback.
+          </p>
         )}
 
         <section>
@@ -66,7 +74,9 @@ export default function FeedbackPage() {
             <div key={f._id} className="border-b py-4">
               <p className="font-medium">{f.name}</p>
               <p className="text-gray-700">{f.message}</p>
-              <p className="text-sm text-gray-500">{new Date(f.createdAt).toLocaleString()}</p>
+              <p className="text-sm text-gray-500">
+                {new Date(f.createdAt).toLocaleString()}
+              </p>
             </div>
           ))}
         </section>
