@@ -1,6 +1,5 @@
 "use client";
 import { useSession } from "next-auth/react";
-import Footer from "../components/Footer"; // ✅ import toegevoegd
 
 export default function Home() {
   const { data: session } = useSession();
@@ -29,9 +28,6 @@ export default function Home() {
           </section>
         )}
       </main>
-
-      {/* FOOTER */}
-      <Footer />
     </div>
   );
 }
