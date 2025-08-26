@@ -14,34 +14,22 @@ export default function Header() {
   const [popupMessage, setPopupMessage] = useState("");
   const [results, setResults] = useState([]);
 
-  // Pagina's en producten voor zoekfunctionaliteit
+  // Bestaande pagina's voor de zoekbar
   const pages = [
     { name: "Home", url: "/" },
     { name: "Feedback", url: "/feedback" },
     { name: "Cart", url: "/cart" },
     { name: "Wishlist", url: "/wishlist" },
-    { name: "About", url: "/about" },
-    { name: "Contact", url: "/contact" },
-    { name: "Privacy Policy", url: "/privacy" },
   ];
-
-  const products = [
-    { name: "Pencil Set", url: "/products/pencil-set" },
-    { name: "Sketchbook", url: "/products/sketchbook" },
-    { name: "Paint Brushes", url: "/products/paint-brushes" },
-    { name: "Markers", url: "/products/markers" },
-  ];
-
-  const itemsToSearch = [...pages, ...products];
 
   // Fuse.js configuratie
-  const fuse = new Fuse(itemsToSearch, {
+  const fuse = new Fuse(pages, {
     keys: ["name"],
     threshold: 0.3,
     ignoreLocation: true,
   });
 
-  // Search submit
+  // Bij submit op enter
   function onSearchSubmit(e) {
     e.preventDefault();
     const term = q.trim();
@@ -51,14 +39,14 @@ export default function Header() {
     if (searchResults.length > 0) {
       router.push(searchResults[0].item.url);
     } else {
-      router.push(term ? `/?q=${encodeURIComponent(term)}` : "/");
+      router.push("/"); // fallback als geen match
     }
 
     setQ("");
     setResults([]);
   }
 
-  // Fuzzy search live bij typen
+  // Fuzzy search bij elke letter
   useEffect(() => {
     const term = q.trim();
     if (!term) {
@@ -69,7 +57,7 @@ export default function Header() {
     setResults(fuzzyResults);
   }, [q]);
 
-  // Popup bij login/register
+  // Popup notifications bij login/register
   useEffect(() => {
     if (router.query?.success) {
       if (router.query.success === "login") {
@@ -91,7 +79,6 @@ export default function Header() {
         </div>
       )}
 
-      {/* Top bar */}
       <div className="bg-[#7FB3FF] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="h-16 flex items-center justify-between gap-4">
@@ -99,22 +86,24 @@ export default function Header() {
               CreativeTools
             </Link>
 
-            {/* Search */}
             <form onSubmit={onSearchSubmit} className="flex-1 max-w-2xl relative">
               <div className="relative">
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   type="search"
-                  placeholder="Search products & pages…"
+                  placeholder="Search pages…"
                   className="w-full h-10 pl-10 pr-4 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white/70"
                   aria-label="Search"
                 />
-                <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2" aria-label="Submit search">
+                <button
+                  type="submit"
+                  className="absolute left-3 top-1/2 -translate-y-1/2"
+                  aria-label="Submit search"
+                >
                   <Search size={18} />
                 </button>
 
-                {/* Dropdown suggesties */}
                 {results.length > 0 && (
                   <ul className="absolute z-10 w-full bg-white text-black border rounded mt-1 max-h-60 overflow-y-auto shadow-md">
                     {results.map((item, index) => (
@@ -135,7 +124,6 @@ export default function Header() {
               </div>
             </form>
 
-            {/* Actions */}
             <div className="flex items-center gap-2 sm:gap-3">
               <Link href="/wishlist" className="p-2 rounded-lg hover:bg-white/15" aria-label="Wishlist">
                 <Heart size={20} />
@@ -167,29 +155,16 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Nav bar */}
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <ul className="flex flex-wrap gap-2 sm:gap-3 py-3">
-            {[
-              { label: "All", href: "/" },
-              { label: "Kids", href: "/kids" },
-              { label: "Adults", href: "/adults" },
-              { label: "Drawing", href: "/drawing" },
-              { label: "Crafts", href: "/crafts" },
-              { label: "Trends", href: "/trends" },
-              { label: "New", href: "/new" },
-              { label: "Organizers", href: "/organizers" },
-              { label: "Handy", href: "/handy" },
-              { label: "Christmas", href: "/christmas" },
-              { label: "Birthday", href: "/birthday" },
-            ].map((item) => (
-              <li key={item.label}>
+            {pages.map((item) => (
+              <li key={item.name}>
                 <Link
-                  href={item.href}
+                  href={item.url}
                   className="inline-block px-4 py-2 rounded-full border border-gray-200 hover:border-[#7FB3FF] hover:text-[#0F172A] transition"
                 >
-                  {item.label}
+                  {item.name}
                 </Link>
               </li>
             ))}
