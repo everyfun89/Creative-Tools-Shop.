@@ -10,10 +10,6 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-<<<<<<< HEAD
-    "nodemailer": "^6.9.4",
-    "fuse.js": "^6.6.2"
-=======
     "fuse.js": "^6.6.2",
     "lucide-react": "^0.462.0",
     "mongodb": "^6.18.0",
@@ -23,22 +19,13 @@
     "nodemailer": "^6.9.4",
     "react": "18.2.0",
     "react-dom": "18.2.0"
->>>>>>> e91f762 (Stash changes before pull)
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.0",
+    "tailwindcss": "^3.4.0",
     "postcss": "^8.4.0",
-<<<<<<< HEAD
     "autoprefixer": "^10.4.0"
   },
   "engines": {
-<<<<<<< HEAD
     "node": "20.x"
-=======
-    "node": ">=18 <=22"
-=======
-    "tailwindcss": "^3.4.0"
->>>>>>> e91f762 (Stash changes before pull)
->>>>>>> 8330f55 (Set Node.js version to 20 for Vercel)
   }
 }
