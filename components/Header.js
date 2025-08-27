@@ -14,7 +14,6 @@ export default function Header() {
   const [popupMessage, setPopupMessage] = useState("");
   const [results, setResults] = useState([]);
 
-  // Pagina routes die je wilt kunnen zoeken
   const pages = [
     { name: "Home", path: "/" },
     { name: "Feedback", path: "/feedback" },
@@ -27,7 +26,7 @@ export default function Header() {
 
   const fuse = new Fuse(pages, {
     keys: ["name"],
-    threshold: 0.3, // hoe lager, hoe strenger
+    threshold: 0.3,
     ignoreLocation: true,
   });
 
@@ -46,7 +45,6 @@ export default function Header() {
     setResults([]);
   }
 
-  // Fuzzy search bij elke letter
   useEffect(() => {
     const term = q.trim();
     if (!term) {
@@ -159,12 +157,14 @@ export default function Header() {
           <ul className="flex flex-wrap gap-2 sm:gap-3 py-3">
             {[
               { label: "All", href: "/" },
+              { label: "New", href: "/new" },
+              { label: "DIY", href: "/diy" },
+              { label: "Special", href: "/special" },
               { label: "Kids", href: "/kids" },
               { label: "Adults", href: "/adults" },
               { label: "Drawing", href: "/drawing" },
               { label: "Crafts", href: "/crafts" },
               { label: "Trends", href: "/trends" },
-              { label: "New", href: "/new" },
               { label: "Organizers", href: "/organizers" },
               { label: "Handy", href: "/handy" },
               { label: "Christmas", href: "/christmas" },
