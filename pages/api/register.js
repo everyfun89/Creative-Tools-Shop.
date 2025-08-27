@@ -14,41 +14,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Hergebruik database connectie
     await connectMongo();
 
-    // Check of email al bestaat
     const existingUser = await User.findOne({ email: email.toLowerCase() }).lean();
-    if (existingUser) {
-      return res.status(400).json({ error: "Email already in use" });
-    }
+    if (existingUser) return res.status(400).json({ error: "Email already in use" });
 
-    // Hash het wachtwoord
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Nieuwe gebruiker aanmaken
     const newUser = await User.create({
       name,
       email: email.toLowerCase(),
       password: hashedPassword,
     });
 
-    return res.status(201).json({
-      message: "Account successfully created",
-      userId: newUser._id,
-    });
+    return res.status(201).json({ message: "Account successfully created", userId: newUser._id });
   } catch (err) {
     console.error("Register API error:", err);
 
-    // Specifieke fout bij duplicate key (extra zekerheid)
-    if (err.code === 11000) {
-      return res.status(400).json({ error: "Email already in use" });
-    }
+    if (err.code === 11000) return res.status(400).json({ error: "Email already in use" });
 
-    // Algemeen server error
-    return res.status(500).json({
-      error: "Server error, please try again",
-      details: err.message,
-    });
+    return res.status(500).json({ error: "Server error, please try again" });
   }
 }
