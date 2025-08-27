@@ -1,4 +1,3 @@
-// pages/register.js
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -42,15 +41,12 @@ export default function Register() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        // Toon duidelijke foutmelding van API
         setMsg(data?.error || "Registration failed");
         return;
       }
 
-      // Succes: toast tonen
       setToast({ show: true, text: "Account successfully created" });
 
-      // Kort wachten voor UX, daarna redirect
       setTimeout(() => {
         setToast({ show: false, text: "" });
         router.push("/login");
