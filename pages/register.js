@@ -20,32 +20,44 @@ function Toast({ show, text }) {
 
 export default function Register() {
   const router = useRouter();
-  const [name,setName] = useState("");
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const [msg,setMsg] = useState(null);
-  const [loading,setLoading] = useState(false);
-  const [toast,setToast] = useState({show:false, text:""});
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [msg, setMsg] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState({ show: false, text: "" });
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true); setMsg(null);
+    setLoading(true);
+    setMsg(null);
+
     try {
       const res = await fetch("/api/register", {
         method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({name,email,password})
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
       });
-      const data = await res.json().catch(()=> ({}));
+
+      const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
+        // Toon duidelijke foutmelding van API
         setMsg(data?.error || "Registration failed");
-      } else {
-        setToast({show:true, text:"Account successfully created"});
-        setTimeout(()=> setToast({show:false, text:""}), 3000);
-        setTimeout(()=> router.push("/login"), 800);
+        return;
       }
+
+      // Succes: toast tonen
+      setToast({ show: true, text: "Account successfully created" });
+
+      // Kort wachten voor UX, daarna redirect
+      setTimeout(() => {
+        setToast({ show: false, text: "" });
+        router.push("/login");
+      }, 1500);
     } catch (err) {
-      setMsg("Network error");
+      setMsg("Network error, please try again");
+      console.error("Register frontend error:", err);
     } finally {
       setLoading(false);
     }
@@ -53,22 +65,51 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-6">
-      <div className="max-w-md w-full p-8 border rounded-2xl">
+      <div className="max-w-md w-full p-8 border rounded-2xl shadow-md">
         <h1 className="text-2xl font-bold mb-4">Create account</h1>
+
         {msg && <div className="mb-3 text-red-600">{msg}</div>}
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Full name" className="w-full p-3 border rounded" required/>
-          <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" placeholder="Email" className="w-full p-3 border rounded" required/>
-          <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" placeholder="Password" className="w-full p-3 border rounded" required/>
-          <button className="w-full py-3 bg-[#7FB3FF] text-white rounded" disabled={loading}>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Full name"
+            className="w-full p-3 border rounded"
+            required
+          />
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            placeholder="Email"
+            className="w-full p-3 border rounded"
+            required
+          />
+          <input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Password"
+            className="w-full p-3 border rounded"
+            required
+          />
+          <button
+            className="w-full py-3 bg-[#7FB3FF] text-white rounded disabled:opacity-70"
+            disabled={loading}
+          >
             {loading ? "Creating…" : "Create account"}
           </button>
         </form>
-        <p className="mt-4 text-sm">
+
+        <p className="mt-4 text-sm text-center">
           Already have an account?{" "}
-          <Link href="/login" className="text-[#7FB3FF]">Sign in</Link>
+          <Link href="/login" className="text-[#7FB3FF] font-medium">
+            Sign in
+          </Link>
         </p>
       </div>
+
       <Toast show={toast.show} text={toast.text} />
     </div>
   );
