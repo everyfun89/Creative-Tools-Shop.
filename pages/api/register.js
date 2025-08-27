@@ -3,23 +3,43 @@ import User from "../../models/User";
 import bcrypt from "bcryptjs";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end();
-  
-  const { name, email, password } = req.body || {};
-  if (!name || !email || !password) return res.status(400).json({ error: "All fields are required" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
   try {
+    const { name, email, password } = req.body || {};
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    // Zorg dat de DB connectie niet oneindig wacht
     await connectMongo();
 
-    const exists = await User.findOne({ email: email.toLowerCase() });
-    if (exists) return res.status(400).json({ error: "User already exists" });
+    const existingUser = await User.findOne({ email: email.toLowerCase() }).lean();
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
 
-    const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email: email.toLowerCase(), password: hashed });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    return res.status(201).json({ message: "User created", userId: user._id });
+    const newUser = await User.create({
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+    });
+
+    return res.status(201).json({
+      message: "User created",
+      userId: newUser._id,
+    });
+
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Server error" });
+    console.error("Register error:", err.message);
+    return res.status(500).json({
+      error: "Registration failed",
+      details: err.message,
+    });
   }
 }
