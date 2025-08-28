@@ -1,64 +1,52 @@
+// scripts/generateCategoryPages.js
 const fs = require('fs');
 const path = require('path');
 
-// Slugify functie voor nette URL mappen
-const slugify = str =>
-  str.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-
-// Alle categorieën (inclusief All)
+// Alle categorieën van je menu
 const categories = [
   "All",
+  "New",
+  "DIY",
+  "Special",
   "Kids",
   "Adults",
   "Drawing",
   "Crafts",
   "Trends",
-  "New",
   "Organizers",
   "Handy",
   "Christmas",
-  "Birthday",
-  "Special",
-  "DIY"
+  "Birthday"
 ];
 
-// App directory (Next.js app router)
 const appDir = path.join(process.cwd(), 'app');
 
 categories.forEach(category => {
-  const dir = path.join(appDir, slugify(category));
+  // Naam map in lowercase zonder spaties
+  const dirName = category.toLowerCase().replace(/\s+/g, '-');
+  const dirPath = path.join(appDir, dirName);
 
   // Maak map aan als die nog niet bestaat
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-    console.log(`📂 Map aangemaakt: ${dir}`);
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+    console.log(`Map aangemaakt: ${dirPath}`);
   }
 
-  // Component naam zonder spaties
-  const componentName = category.replace(/\s/g, '') + "Page";
-
-  // Inhoud van page.js
-  const content = `
-export default function ${componentName}() {
+  // Maak page.js bestand aan als het nog niet bestaat
+  const filePath = path.join(dirPath, 'page.js');
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, `
+export default function ${category.replace(/\s/g, '')}Page() {
   return (
-    <main className="p-6">
-      <h1 className="text-3xl font-bold mb-4">${category}</h1>
-      <p className="text-gray-600">Hier komt de content voor ${category}.</p>
+    <main>
+      <h1>${category}</h1>
+      <p>Hier komt de content voor ${category}.</p>
     </main>
   );
 }
-  `.trim();
-
-  // Pad naar page.js
-  const filePath = path.join(dir, 'page.js');
-
-  // Maak bestand alleen als het nog niet bestaat
-  if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, content);
-    console.log(`✅ page.js aangemaakt voor ${category}`);
-  } else {
-    console.log(`⚠️  page.js bestaat al voor ${category}, overgeslagen`);
+    `.trim());
+    console.log(`page.js aangemaakt voor ${category}`);
   }
 });
 
-console.log("🎉 Alle categorieën zijn verwerkt!");
+console.log("Alle categoriepagina's zijn aangemaakt!");
