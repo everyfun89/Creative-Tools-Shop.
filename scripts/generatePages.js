@@ -19,33 +19,34 @@ const categories = [
   "Birthday"
 ];
 
-const appDir = path.join(process.cwd(), 'app');
+// Gebruik pages-dir in plaats van app-dir
+const pagesDir = path.join(process.cwd(), 'pages');
 
 categories.forEach(category => {
   // Naam map in lowercase zonder spaties
   const dirName = category.toLowerCase().replace(/\s+/g, '-');
-  const dirPath = path.join(appDir, dirName);
+  const dirPath = path.join(pagesDir, dirName);
 
-  // Maak map aan als die nog niet bestaat
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
     console.log(`Map aangemaakt: ${dirPath}`);
   }
 
-  // Maak page.js bestand aan als het nog niet bestaat
-  const filePath = path.join(dirPath, 'page.js');
+  const filePath = path.join(dirPath, 'index.js'); // pages gebruiken index.js
   if (!fs.existsSync(filePath)) {
     fs.writeFileSync(filePath, `
 export default function ${category.replace(/\s/g, '')}Page() {
+  const introText = "Welkom bij de categorie ${category}! Hier vind je alle items die relevant zijn.";
+  
   return (
     <main>
       <h1>${category}</h1>
-      <p>Hier komt de content voor ${category}.</p>
+      <p>{introText}</p>
     </main>
   );
 }
     `.trim());
-    console.log(`page.js aangemaakt voor ${category}`);
+    console.log(`index.js aangemaakt voor ${category}`);
   }
 });
 
