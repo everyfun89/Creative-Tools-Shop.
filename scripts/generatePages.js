@@ -27,25 +27,29 @@ categories.forEach(category => {
   const dirName = category.toLowerCase().replace(/\s+/g, '-');
   const dirPath = path.join(pagesDir, dirName);
 
+  // Maak map aan als die nog niet bestaat
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
     console.log(`Map aangemaakt: ${dirPath}`);
   }
 
-  const filePath = path.join(dirPath, 'index.js'); // pages gebruiken index.js
+  // Maak index.js aan als die nog niet bestaat
+  const filePath = path.join(dirPath, 'index.js');
   if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, `
+    const content = `
 export default function ${category.replace(/\s/g, '')}Page() {
   const introText = "Welkom bij de categorie ${category}! Hier vind je alle items die relevant zijn.";
-  
+
   return (
-    <main>
-      <h1>${category}</h1>
+    <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+      <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>${category}</h1>
       <p>{introText}</p>
     </main>
   );
 }
-    `.trim());
+    `.trim();
+
+    fs.writeFileSync(filePath, content, 'utf8');
     console.log(`index.js aangemaakt voor ${category}`);
   }
 });
